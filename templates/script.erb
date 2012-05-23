@@ -1,0 +1,39 @@
+#!/bin/bash -xv
+# 
+# CloudInit firstboot script
+# 
+
+exec > >(tee /root/firstboot.log) 2>&1
+
+# Fixme: Config portion of cloud-init fails to add the repo, adding it by "hand"
+echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | sudo tee /etc/apt/sources.list.d/opscode.list
+wget -qO - http://apt.opscode.com/packages@opscode.com.gpg.key | sudo apt-key add -
+apt-get update
+
+# Setting our chef server during the pkg install, client config will be defaults for the first run, our recipes will take it from there. 
+echo "chef  chef/chef_server_url  string <%= instance["chef_server_url"] %>" | debconf-set-selections
+
+# Installing current version, .. should control versions.
+apt-get -y install chef
+
+# set hostname
+HOSTNAME=<%= hostname %>
+echo $HOSTNAME > /etc/hostname
+echo "127.0.1.1 $HOSTNAME <%= hostname.split('.').first %>" >> /etc/hosts
+hostname $HOSTNAME
+
+curl -s '<%= instance["chef_key_url"] %>' -o /etc/chef/validation.pem
+chmod 600 /etc/chef/validation.pem
+
+cat <<CLIENT > /etc/chef/first-run.json
+<% if instance['chef_json'] %>
+<%= instance['chef_json'].to_json %>
+<% else %>
+{ "run_list": ["role[base_ec2]"] }
+<% end %>
+CLIENT
+
+apt-get update
+
+# Chef first run
+chef-client -j /etc/chef/first-run.json -E <%= instance["chef_json"]["chef_environment"] %>

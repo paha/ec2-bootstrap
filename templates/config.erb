@@ -1,0 +1,17 @@
+# cloud config
+
+disable_root: true
+apt-update: true
+apt_preserve_sources_list: true
+
+apt_sources:
+ - source: "ppa:smoser/ppa"
+ - source: deb http://apt.opscode.com lucid-0.10 main
+   filename: opscode.list
+
+packages:
+- tree
+- colordiff
+
+ssh_authorized_keys:
+- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2TTbC7UjHt3xIifTwtSRnLPpLiOyIOqAqzfHU2lOWcgEixDghJuv5MsQKXFBpY8N5hCn86Ksk2d6p+UzXtX2D6iL+FhLBLxe0Czyw4FfPbhLsyQUYDeGpJaH2kMvih1UwI78wNa1LVY3ghnZNw8rUz1DYGwFgCIHHW0Olr/W7m+r6UmDk1fnnMrcfUvMAFX4NMIUKV6pagHrN8yEE5Zidjb+orXOaaKOwpunlpJfi4EPxSSRHQ0HPL+BwVW3COSzIt8mqjglbdkPTKiKxLH0cz3WXmm9SJ6K9GY24+loLC6DUKcFBg19yo4kTegSDamGKE/f8/kJ+xv79hCy1YFuQ== pavel

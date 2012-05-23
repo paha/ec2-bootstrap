@@ -1,0 +1,27 @@
+{
+  "number" : 3,
+  "base_hostname" : "ec2-test",
+  "ec2_backet" : "chef-configs",
+  "validation_file" : "validation.pem",
+  "domain" : "mycompany.com",
+  "region" : "us-east-1",
+  "default_instance" : {
+      "ec2-type": "t1.micro",
+      "ec2-ami": "ami-ad36fbc4",
+      "security_group": [ "secure" ],
+      "key" : "pavel",
+      "chef_json" : {
+        "chef_environment" : "dev",                                      
+        "authorization" : {                                                     
+          "sudo": { "vip" : ["us"] }                               
+        },
+        "run_list" : [
+          "role[base]"
+        ]
+      },
+      "chef_server_url"	: "https://chef.mycompany.com",
+      "tags": {
+        "Project" : "Test"
+      }
+  }
+}
